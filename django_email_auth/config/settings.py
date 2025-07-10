@@ -5,7 +5,7 @@ import dj_database_url  # Сторонний импорт вынесен нав�
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Environment variables
 env = environ.Env(
@@ -15,12 +15,13 @@ env = environ.Env(
 
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# environ.Env.read_env('/home/alex/code/InvestMindAI/.env')
 
 #print("SECRET_KEY from .env:", env("SECRET_KEY", default="NOT FOUND"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-temporary-key-for-development-only-change-in-production') 
-SUPABASE_DB_PASSWORD = env('SUPABASE_DB_PASSWORD')
+SUPABASE_DB_PASSWORD = env('SUPABASE_DB_PASSWORD', default='')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     
     # Local apps
-    'accounts',
+    # 'accounts',
     'django_email_auth.accounts',
 ]
 
@@ -54,12 +55,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+# ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'django_email_auth.config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR  / 'django_email_auth' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,7 +74,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+# WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'django_email_auth.config.wsgi.application'
 
 # Supabase Database Configuration
 # Приоритет: если есть DATABASE_URL, используем его, иначе отдельные параметры
