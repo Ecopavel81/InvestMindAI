@@ -19,50 +19,53 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
-    template_name = 'accounts/login.html'
+    template_name = "accounts/login.html"
     redirect_authenticated_user = True
 
 
 class CustomLogoutView(LogoutView):
-    next_page = 'home'
+    next_page = "home"
 
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'accounts/signup.html'
-    success_url = reverse_lazy('login')
+    template_name = "accounts/signup.html"
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
         response = super().form_valid(form)
         user = self.object
         user.is_active = False  # Деактивируем пользователя до подтверждения email
         user.save()
-        
+
         # Отправляем email для подтверждения
         self.send_verification_email(user)
-        
+
         messages.success(
-            self.request, 
-            'Регистрация прошла успешно! Проверьте свою почту для подтверждения аккаунта.'
+            self.request,
+            "Регистрация прошла успешно! Проверьте свою почту для подтверждения аккаунта.",
         )
         return response
 
     def send_verification_email(self, user):
-        subject = 'Подтвердите свою почту'
+        subject = "Подтвердите свою почту"
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        
-        message = render_to_string('accounts/verification_email.html', {
-            'user': user,
-            'domain': self.request.get_host(),
-            'uid': uid,
-            'token': token,
-            'protocol': 'https' if self.request.is_secure() else 'http',
-        })
-        
+
+        message = render_to_string(
+            "accounts/verification_email.html",
+            {
+                "user": user,
+                "domain": self.request.get_host(),
+                "uid": uid,
+                "token": token,
+                "protocol": "https" if self.request.is_secure() else "http",
+            },
+        )
+
         send_mail(
             subject,
-            '',
+            "",
             settings.DEFAULT_FROM_EMAIL,
             [user.email],
             html_message=message,
@@ -83,8 +86,8 @@ class EmailVerificationView(View):
             user.is_email_verified = True
             user.save()
             login(request, user)
-            messages.success(request, 'Ваша почта успешно подтверждена!')
-            return redirect('home')
+            messages.success(request, "Ваша почта успешно подтверждена!")
+            return redirect("home")
         else:
-            messages.error(request, 'Ссылка для подтверждения недействительна!')
-            return redirect('login')
+            messages.error(request, "Ссылка для подтверждения недействительна!")
+            return redirect("login")

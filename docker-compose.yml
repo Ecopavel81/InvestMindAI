@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   db:
@@ -21,8 +21,8 @@ services:
       - ./media:/app/media    
     environment:
       - DEBUG=True
-      - DATABASE_URL=postgresql://postgres.kdakobaosmskerwwdmgx:[YOUR-PASSWORD]@aws-0-eu-north-1.pooler.supabase.com:6543/postgres
-      - SECRET_KEY = ${SECRET_KEY}
+      - DATABASE_URL="postgresql://postgres.kdakobaosmskerwwdmgx:[YOUR-PASSWORD]@aws-0-eu-north-1.pooler.supabase.com:6543/postgres"
+      - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
       - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     env_file:

@@ -1,28 +1,85 @@
-[tool.poetry]
+# СОВРЕМЕННЫЙ pyproject.toml с поддержкой PEP 621
+
+[project]
 name = "django_email_auth"
 version = "0.1.0"
 description = "Django project with email authentication"
-authors = ["Your Name <your.email@example.com>"]
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
 readme = "README.md"
+license = {text = "MIT"}
+keywords = ["django", "auth", "email", "authentication"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.11, <3.13"
+dependencies = [
+    "django>=5.0.0,<6.0.0",
+    "django-environ>=0.11.0,<1.0.0",
+    "dj-database-url>=2.1.0,<3.0.0",
+    "pillow>=10.0.0,<11.0.0",
+    "whitenoise>=6.6.0,<7.0.0",
+    "gunicorn>=21.2.0,<22.0.0",
+    "psycopg2-binary>=2.9.0,<3.0.0",
+    "supabase>=1.0.0,<2.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-django = "^5.0.0"
-django-environ = "^0.11.0"
-dj-database-url = "^2.1.0"
-pillow = "^10.0.0"
-whitenoise = "^6.6.0"
-gunicorn = "^21.2.0"
-psycopg2-binary = "^2.9.0"
-supabase = "^1.0"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0,<8.0.0",
+    "pytest-django>=4.7.0,<5.0.0",
+    "black>=24.0.0,<25.0.0",
+    "flake8>=6.0.0,<7.0.0",
+    "django-debug-toolbar>=4.2.0,<5.0.0",
+    "python-dotenv>=1.1.1,<2.0.0",
+    "mypy>=1.0.0,<2.0.0",
+    "django-stubs>=4.2.0,<5.0.0",
+    "pre-commit>=3.0.0,<4.0.0",
+    "coverage>=7.0.0,<8.0.0",
+    "pytest-cov>=4.0.0,<5.0.0",
+    "factory-boy>=3.3.0,<4.0.0",
+    "faker>=20.0.0,<21.0.0",
+]
 
-[tool.poetry.dev-dependencies]
-black = "^23.0.0"
-flake8 = "^6.0.0"
+[project.urls]
+"Homepage" = "https://github.com/yourusername/django-email-auth"
+"Repository" = "https://github.com/yourusername/django-email-auth"
+"Documentation" = "https://django-email-auth.readthedocs.io/"
+"Bug Tracker" = "https://github.com/yourusername/django-email-auth/issues"
+
+[project.scripts]
+django-email-auth = "django_email_auth.manage:main"
+
+# Poetry-специфичные настройки
+[tool.poetry]
+# Указываем, какие пакеты включать
+packages = [{include = "django_email_auth"}]
+
+# Зависимости для разработки через Poetry groups
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
 pytest-django = "^4.7.0"
+black = "^24.0.0"
+flake8 = "^6.0.0"
 django-debug-toolbar = "^4.2.0"
 python-dotenv = "^1.1.1"
-
+mypy = "^1.0.0"
+django-stubs = "^4.2.0"
+pre-commit = "^3.0.0"
+coverage = "^7.0.0"
+pytest-cov = "^4.0.0"
+factory-boy = "^3.3.0"
+faker = "^20.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -31,7 +88,92 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 88
 target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  migrations
+  | venv
+  | env
+  | .env
+  | .venv
+  | __pycache__
+)/
+'''
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "django_email_auth.config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--tb=short",
+    "--cov=django_email_auth",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-fail-under=80",
+]
+testpaths = ["tests"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "django_email_auth.config.settings"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "venv",
+    "env",
+    ".env",
+    ".venv",
+]
+
+[tool.coverage.run]
+source = ["django_email_auth"]
+omit = [
+    "*/migrations/*",
+    "*/venv/*",
+    "*/env/*",
+    "manage.py",
+    "*/settings/*",
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+skip_covered = false
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_django = "django"
+known_first_party = "django_email_auth"
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "FIRSTPARTY", "LOCALFOLDER"]

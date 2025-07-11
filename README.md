@@ -78,6 +78,11 @@ source /home/eco/.cache/pypoetry/virtualenvs/django-email-auth--JxTsaVp-py3.11/b
 1. Установите PostgreSQL или используйте Docker:
 ```bash
 docker run --name postgres-dev -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15-alpine
+
+1.1. Подключение к Supabase
+poetry add psycopg2-binary dj-database-url django-environ
+poetry add supabase
+poetry add --group dev python-dotenv
 ```
 
 2. Создайте и примените миграции:
