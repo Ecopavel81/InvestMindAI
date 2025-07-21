@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Watchlist Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .input-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .watchlist-display {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ticker-tag {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        .analysis-results {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .recommendation-info {
+            flex: 1;
+        }
+        
+        .recommendation-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .strong-buy { background: #27ae60; }
+        .buy { background: #2ecc71; }
+        .hold { background: #f39c12; }
+        .sell { background: #e74c3c; }
+        .strong-sell { background: #c0392b; }
+        
+        .ticker-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .ticker-details {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .recommendation-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .recommendation-info {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Crypto Watchlist Analyzer</h1>
+            <p>Анализ и рекомендации по вашему криптовалютному портфелю</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="watchlist-input">Ваш Watchlist</label>
+                <textarea id="watchlist-input" 
+                         placeholder="Введите тикеры через запятую или по одному на строке&#10;Например: BTCUSDT, ETHUSDT, SOLUUSDT&#10;или&#10;BTCUSDT&#10;ETHUSDT&#10;SOLUUSDT"></textarea>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="loadWatchlist()">Загрузить Watchlist</button>
+                <button class="btn-secondary" onclick="analyzeWatchlist()">Анализировать</button>
+                <button class="btn-success" onclick="exportResults()">Экспорт результатов</button>
+            </div>
+        </div>
+        
+        <div id="watchlist-display" class="watchlist-display" style="display: none;">
+            <h3>Ваш Watchlist</h3>
+            <div id="tickers-container"></div>
+        </div>
+        
+        <div id="analysis-results" class="analysis-results" style="display: none;">
+            <h3>Результаты анализа</h3>
+            <div id="recommendations-container"></div>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Анализируем ваш watchlist...</p>
+        </div>
+        
+        <div id="message-container"></div>
+    </div>
+
+    <script>
+        let currentWatchlist = [];
+        let analysisResults = [];
+        
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+        
+        function loadWatchlist() {
+            const input = document.getElementById('watchlist-input').value.trim();
+            
+            if (!input) {
+                showMessage('Пожалуйста, введите тикеры', 'error');
+                return;
+            }
+            
+            // Парсим тикеры
+            const tickers = [];
+            const lines = input.split('\n');
+            
+            for (let line of lines) {
+                if (line.includes(',')) {
+                    // Разделяем по запятой
+                    const commaSeparated = line.split(',').map(t => t.trim().toUpperCase());
+                    tickers.push(...commaSeparated);
+                } else {
+                    // Одиночный тикер
+                    const ticker = line.trim().toUpperCase();
+                    if (ticker) tickers.push(ticker);
+                }
+            }
+            
+            // Убираем дубликаты
+            currentWatchlist = [...new Set(tickers)];
+            
+            if (currentWatchlist.length === 0) {
+                showMessage('Не найдено валидных тикеров', 'error');
+                return;
+            }
+            
+            displayWatchlist();
+            showMessage(`Загружено ${currentWatchlist.length} тикеров`, 'success');
+        }
+        
+        function displayWatchlist() {
+            const container = document.getElementById('tickers-container');
+            const display = document.getElementById('watchlist-display');
+            
+            container.innerHTML = '';
+            
+            currentWatchlist.forEach(ticker => {
+                const tag = document.createElement('div');
+                tag.className = 'ticker-tag';
+                tag.textContent = ticker;
+                container.appendChild(tag);
+            });
+            
+            display.style.display = 'block';
+        }
+        
+        function analyzeWatchlist() {
+            if (currentWatchlist.length === 0) {
+                showMessage('Сначала загрузите watchlist', 'error');
+                return;
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('analysis-results').style.display = 'none';
+            
+            // Имитация анализа (в реальном приложении здесь был бы API запрос)
+            setTimeout(() => {
+                analysisResults = simulateAnalysis();
+                displayResults();
+                document.getElementById('loading').style.display = 'none';
+                showMessage('Анализ завершен', 'success');
+            }, 2000);
+        }
+        
+        function simulateAnalysis() {
+            const recommendations = ['STRONG_BUY', 'BUY', 'HOLD', 'SELL', 'STRONG_SELL'];
+            const trends = ['STRONG_UP', 'UP', 'SIDEWAYS', 'DOWN', 'STRONG_DOWN'];
+            
+            return currentWatchlist.map(ticker => {
+                const randomRec = recommendations[Math.floor(Math.random() * recommendations.length)];
+                const randomTrend = trends[Math.floor(Math.random() * trends.length)];
+                
+                return {
+                    ticker: ticker,
+                    recommendation: randomRec,
+                    trend: randomTrend,
+                    price: (Math.random() * 1000 + 10).toFixed(4),
+                    change: (Math.random() * 20 - 10).toFixed(2),
+                    volatility: (Math.random() * 15 + 1).toFixed(2),
+                    volume_trend: Math.random() > 0.5 ? 'INCREASING' : 'DECREASING'
+                };
+            });
+        }
+        
+        function displayResults() {
+            const container = document.getElementById('recommendations-container');
+            const display = document.getElementById('analysis-results');
+            
+            container.innerHTML = '';
+            
+            // Сортируем по важности рекомендации
+            const sortOrder = { 'STRONG_BUY': 1, 'BUY': 2, 'HOLD': 3, 'SELL': 4, 'STRONG_SELL': 5 };
+            const sortedResults = analysisResults.sort((a, b) => sortOrder[a.recommendation] - sortOrder[b.recommendation]);
+            
+            sortedResults.forEach(result => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                
+                const emoji = getRecommendationEmoji(result.recommendation);
+                const badgeClass = result.recommendation.toLowerCase().replace('_', '-');
+                
+                card.innerHTML = `
+                    <div class="recommendation-info">
+                        <div class="ticker-name">${emoji} ${result.ticker}</div>
+                        <div class="ticker-details">
+                            Цена: $${result.price} | Изменение: ${result.change}% | 
+                            Тренд: ${result.trend} | Волатильность: ${result.volatility}%
+                        </div>
+                    </div>
+                    <div class="recommendation-badge ${badgeClass}
