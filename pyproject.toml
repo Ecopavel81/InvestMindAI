@@ -68,6 +68,10 @@ description = "Django project with email authentication"
 authors = ["Your Name <your.email@example.com>"]
 packages = [{ include = "django_email_auth" }]
 
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.2.4"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"] # Ensure poetry-core is at least 1.0.0 for PEP 621
 build-backend = "poetry.core.masonry.api"
