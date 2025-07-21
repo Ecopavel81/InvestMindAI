@@ -64,7 +64,7 @@ ROOT_URLCONF = "django_email_auth.config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "django_email_auth" / "templates"],
+        "DIRS": [os.path.join(BASE_DIR, "django_email_auth", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
