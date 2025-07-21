@@ -26,7 +26,6 @@ requires-python = ">=3.11, <3.13"
 dependencies = [
     "django>=5.0.0,<6.0.0",
     "django-environ>=0.11.0,<1.0.0",
-    "dj-database-url>=2.1.0,<3.0.0",
     "pillow>=10.0.0,<11.0.0",
     "whitenoise>=6.6.0,<7.0.0",
     "gunicorn>=21.2.0,<22.0.0",
@@ -69,7 +68,7 @@ authors = ["Your Name <your.email@example.com>"]
 packages = [{ include = "django_email_auth" }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
 django = "^5.2.4"
 django-environ = "^0.12.0"
 dj-database-url = "^3.0.1"
