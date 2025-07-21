@@ -14,9 +14,10 @@ env = environ.Env(
 )
 
 # Take environment variables from .env file
-# environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # environ.Env.read_env('/home/alex/code/InvestMindAI/.env')
-env.read_env(os.path.join(BASE_DIR, ".env"))
+print(f'{BASE_DIR = }')
+print("SUPABASE_DB_PASSWORD:", env("SUPABASE_DB_PASSWORD"))
 
 # print("SECRET_KEY from .env:", env("SECRET_KEY", default="NOT FOUND"))
 
