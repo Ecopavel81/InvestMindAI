@@ -64,25 +64,13 @@ django-email-auth = "django_email_auth.manage:main"
 [tool.poetry]
 # Указываем, какие пакеты включать
 packages = [{include = "django_email_auth"}]
-
-# Зависимости для разработки через Poetry groups
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.0.0"
-pytest-django = "^4.7.0"
-black = "^24.0.0"
-flake8 = "^6.0.0"
-django-debug-toolbar = "^4.2.0"
-python-dotenv = "^1.1.1"
-mypy = "^1.0.0"
-django-stubs = "^4.2.0"
-pre-commit = "^3.0.0"
-coverage = "^7.0.0"
-pytest-cov = "^4.0.0"
-factory-boy = "^3.3.0"
-faker = "^20.0.0"
+# Poetry-specific configurations like 'name', 'version', 'description'
+# are NOT needed here if they are already defined in [project] according to PEP 621.
+# Remove the [tool.poetry.group.dev.dependencies] section entirely as it conflicts
+# with [project.optional-dependencies] for dev dependencies.
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"] # Ensure poetry-core is at least 1.0.0 for PEP 621
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
@@ -91,12 +79,12 @@ target-version = ['py311']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  migrations
-  | venv
-  | env
-  | .env
-  | .venv
-  | __pycache__
+    migrations
+    | venv
+    | env
+    | .env
+    | .venv
+    | __pycache__
 )/
 '''
 
