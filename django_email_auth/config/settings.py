@@ -26,6 +26,7 @@ SECRET_KEY = env(
     default="django-insecure-temporary-key-for-development-only-change-in-production",
 )
 SUPABASE_DB_PASSWORD = env("SUPABASE_DB_PASSWORD", default="")
+print("SUPABASE_DB_PASSWORD:", env("SUPABASE_DB_PASSWORD"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
