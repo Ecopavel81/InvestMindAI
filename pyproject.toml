@@ -62,12 +62,11 @@ django-email-auth = "django_email_auth.manage:main"
 
 # Poetry-специфичные настройки
 [tool.poetry]
-# Указываем, какие пакеты включать
-packages = [{include = "django_email_auth"}]
-# Poetry-specific configurations like 'name', 'version', 'description'
-# are NOT needed here if they are already defined in [project] according to PEP 621.
-# Remove the [tool.poetry.group.dev.dependencies] section entirely as it conflicts
-# with [project.optional-dependencies] for dev dependencies.
+name = "django_email_auth"
+version = "0.1.0"
+description = "Django project with email authentication"
+authors = ["Your Name <your.email@example.com>"]
+packages = [{ include = "django_email_auth" }]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"] # Ensure poetry-core is at least 1.0.0 for PEP 621
