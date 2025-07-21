@@ -10,13 +10,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Environment variables
 env = environ.Env(
-    # set casting, default value
     DEBUG=(bool, False)
 )
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+# environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # environ.Env.read_env('/home/alex/code/InvestMindAI/.env')
+env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # print("SECRET_KEY from .env:", env("SECRET_KEY", default="NOT FOUND"))
 
