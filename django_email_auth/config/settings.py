@@ -137,7 +137,7 @@ STATICFILES_DIRS = (
     [
         os.path.join(BASE_DIR, 'static'),
     ]
-    if os.path.join(BASE_DIR, 'static').exists()
+    if BASE_DIR
     else []
 )
 
